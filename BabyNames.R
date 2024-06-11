@@ -27,7 +27,7 @@ ggplot(data = fiv_names, aes(x = name, color = name, fill = name, alpha = 1))+
 
 the_nineties <- babynames %>%  
   filter(year <2000 & year >=1990)
-write_csv(the_nineties, "90s")
+write_csv(the_nineties, "90s.csv")
 
 team_names<- babynames %>% 
   filter(year == 2005)
