@@ -1,0 +1,57 @@
+---
+title: "Snowfall(climate)"
+author: "Srijan Basnet"
+date: "2024-06-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(sf)
+library(tidyverse)
+library(tmap)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(rnaturalearthhires)
+weather <- read_csv("sewanee_weather.csv")
+```
+
+
+```{r}
+avg_snow_month <- weather %>%
+  filter(STATION == "USC00408184") %>%
+  mutate(month = months(DATE)) %>%
+  group_by(month) %>%
+  summarise(avg_snowfall = mean(SNOW, na.rm = TRUE)) %>%
+  arrange(desc(avg_snowfall))
+ggplot(data = avg_snow_month %>% mutate(month = fct_reorder(factor(month),desc(avg_snowfall))),
+         aes(x = month, y= avg_snowfall))+
+  geom_col(col = "darkgreen", fill= "darkblue")+
+  labs(x = "Month", y= "Average Snowfall Per Day", title = "Average Snowfall", subtitle = "Per Day For Every Month Combined Since 2000 at Sewanee")
+```
+
+
+
+```{r}
+max_temp<- weather %>%  
+  mutate(Year = year(DATE)) %>%
+  group_by(Year) %>% 
+  summarise(max_temp = mean(TMAX, na.rm = TRUE))
+ggplot(data = max_temp, aes(x = Year,y= max_temp))+
+  geom_point()+
+  geom_line()
+
+
+min_temp<- weather %>%  
+  mutate(Year = year(DATE)) %>%
+  group_by(Year) %>% 
+  summarise(min_temp = mean(TMIN, na.rm = TRUE))
+ggplot(data = min_temp, aes(x = Year,y= min_temp))+
+  geom_point()+
+  geom_line()
+ 
+```
+
+
+
+
