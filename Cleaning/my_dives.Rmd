@@ -1,0 +1,56 @@
+---
+title: "cleaningdata"
+author: "Srijan Basnet"
+date: "2024-06-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning =FALSE)
+
+library(dplyr)
+library(readr)
+library(tidyverse)
+library(stringr)
+```
+
+
+```{r}
+
+dives <- read_csv('https://raw.githubusercontent.com/databrew/intro-to-data-science/main/data/whales-dives.csv')
+
+head(dives)
+
+messy_dives <- read_csv('https://raw.githubusercontent.com/databrew/intro-to-data-science/main/data/whales-dives-messy.csv')
+
+my_dives<-messy_dives
+  
+my_dives<-my_dives%>% 
+  # 
+  mutate(species = Species.ID, 
+         sit = parse_number(sit),
+         YEAR = ifelse(YEAR < 2000, paste0(20,YEAR), YEAR),
+         Month = str_pad(Month,2,pad="0"),
+         Day = str_pad(Day,2,pad ="0"),
+         Species.ID = paste0(YEAR,Month,Day,sit),
+         bhvr = ifelse(bhvr == "OTHER"| bhvr == "FEED", bhvr, "NA"),
+         species = ifelse(species== "FW"|species == "HW", species, "NA"))
+        
+
+
+# removing things
+my_dives <- select(my_dives, -YEAR)
+my_dives <- select(my_dives, -Month)
+my_dives <- select(my_dives, -Day)
+my_dives <- select(my_dives, -sit)
+
+
+
+my_dives<-my_dives%>% 
+  drop_na() %>% 
+  filter(species != "NA")
+
+
+```
+
+
