@@ -28,7 +28,13 @@ words <- survey %>%
 
 word_freq <- words %>% group_by(word) %>% tally()
 wordcloud2(word_freq, size =2, shape = "brain")
-sw <- read_csv('https://raw.githubusercontent.com/databrew/intro-to-data-science/main/data/stopwords.csv')
+sw<- read_csv('https://raw.githubusercontent.com/databrew/intro-to-data-science/main/data/stopwords.csv')
 nodup<-word_freq %>% 
 filter(!word%in%sw$word) 
 wordcloud2(nodup, size =0.5, shape = "triangle")
+nodup<-nodup %>% 
+arrange(desc(n))
+
+top10<- head(nodup,10)
+ggplot(data = top10, aes(x = word, y = n, fill = word))+
+  geom_col()
